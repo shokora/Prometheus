@@ -1,0 +1,94 @@
+package Branch.Shokora.Backend.XML;
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
+/**
+ *
+ * @author shokora
+ */
+public abstract class XMLParser
+{
+    public Document dom;
+
+
+    public XMLParser(InputStream in)
+    {
+        parseXML(in);
+    }
+
+
+    /**
+     * Create the factory and then create the document by parsing the XML information.
+     * @param lines String that holds the xml document
+     */
+    public void parseXML(InputStream in)
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try
+        {
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            dom = db.parse(in);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(ParserConfigurationException e)
+        {
+            e.printStackTrace();
+        }
+        catch(SAXException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public abstract void parseDocument() throws Exception;
+    
+    /**
+    * I take a xml element and the tag name, look for the tag and get
+    * the text content
+    * i.e for <employee><name>John</name></employee> xml snippet if
+    * the Element points to employee node and tagName is name I will return John
+    * @param ele
+    * @param tagName
+    * @return
+    */
+    public String getTextValue(Element ele, String tagName)
+    {
+        String textVal = null;
+        NodeList nl = ele.getElementsByTagName(tagName);
+        if(nl != null && nl.getLength() > 0) {
+            Element el = (Element)nl.item(0);
+            textVal = el.getFirstChild().getNodeValue();
+        }
+
+        return textVal;
+    }
+
+
+	/**
+	* Calls getTextValue and returns a int value
+	* @param ele
+	* @param tagName
+	* @return
+	*/
+	public int getIntValue(Element ele, String tagName) throws Exception
+    {
+       return Integer.parseInt(getTextValue(ele,tagName));
+	}
+    
+    public long getLongValue(Element ele, String tagName) throws Exception
+    {
+        return Long.parseLong(getTextValue(ele,tagName));
+    }
+
+
+}

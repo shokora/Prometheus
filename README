@@ -1,0 +1,36 @@
+Prometheus Development Alpha
+
+Because I am currently implementing a lot of other things and I am very lazy I didn't
+implement a proper command-help system yet. Never the less it would be pretty useless
+to implement a lot of features but not give people the knowledge to actually use them
+so here is everything you need to know:
+
+First, the config file is in Backend/config.properties, this will change in an actual release
+but for now you have to use that to set the downloadfolder.
+
+The flags for search:
+-dirsonly           | Only directories are listed
+-minsize            | Minimum size of the file, like 1G or 2MB or whatever
+-maxsize            | Maximum size of the file, like 2G or 3MB or whatever
+-page               | There are 29 results on a page so page n means result n*29 to (n+1)*29
+
+You can open SMB servers with the open command like:
+open smb://shokora/
+But you can also open a directory from the search results like:
+open -s 23
+
+You can download files by going into an SMB server and traveling to the file you need with cd
+then there are multiple options. You can either do:
+get directory/ or get 4 to get file 4
+You can also download a full smb:// url and what you will probably do is download a file from the
+search results with:
+get -s 12
+
+You can download both files and directories.
+
+Many more features will come :) I aim it to be as flexible as possible
+
+
+Greetings,
+
+Shokora

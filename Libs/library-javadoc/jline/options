@@ -1,0 +1,20 @@
+-classpath '/Users/jason/ws/jline/target/classes:/Users/jason/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar'
+ -protected
+-sourcepath
+'/Users/jason/ws/jline/src/main/java'
+-author
+-bottom
+'Copyright © 2002-2008. All Rights Reserved.'
+-charset
+'ISO-8859-1'
+-d
+'/Users/jason/ws/jline/target/site/apidocs'
+-doctitle
+'JLine 0.9.94 API'
+-link
+'http://java.sun.com/j2se/1.5.0/docs/api'
+-linksource
+-use
+-version
+-windowtitle
+'JLine 0.9.94 API'
