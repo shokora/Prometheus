@@ -11,6 +11,7 @@ import jcifs.smb.*;
  *©Shokora 2009
  * @author shokora
  * @todo make a standardized parameter scan function
+ * @todo seperate all the command classes to make it more modulair and for suitable for usage in the GUI
  */
 public class cli
 {
@@ -93,14 +94,13 @@ public class cli
         String token = "";
 
         int i = 0;
-        while(scan.hasNext())
+        if(scan.hasNext())
         {
-            if(i == 0)
+            token = scan.next();
+            while(scan.hasNext())
             {
-                token = scan.next(); //The token is the first word
-                i++;
+                pars.add(scan.next());
             }
-            else pars.add(scan.next());
         }
 
         for(Command command : commandList)
@@ -232,7 +232,7 @@ public class cli
                 URL url = new URL(query);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
-                ParserCampusSearch xml = new ParserCampusSearch(conn.getInputStream());
+                ParserCampusSearch xml = new ParserCampusSearch(conn.getInputStream()); //create the xml parser
                 ArrayList<SearchResult> results = xml.getSearchResults();
 
                 int i = 0;
@@ -282,7 +282,9 @@ public class cli
             Scanner intScan = new Scanner(call);
             int number = -1;
 
-            //This is very ugly i will probably make it better later...
+            /*This is very ugly i will probably make it better later...
+             * If there is a number in the command the only possibility is that it's a file number
+             */
             while(intScan.hasNext())
             {
                 if(intScan.hasNextInt()) number = intScan.nextInt();
@@ -323,11 +325,12 @@ public class cli
                 }
                 catch(NullPointerException e)
                 {
-                    if(args.get(0).substring(0,6).equals("smb://")) //See if it's a full url
+                    //take the full call because there are a lot of morons who use white spaces in filenames
+                    if(call.substring(0,6).equals("smb://")) //See if it's a full url because
                     {
                         try
                         {
-                            downloadFile = new SmbFile(args.get(0));
+                            downloadFile = new SmbFile(call);
                         }
                         catch(Exception ex2)
                         {
