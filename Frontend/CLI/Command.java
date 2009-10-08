@@ -5,41 +5,105 @@ import java.util.*;
 /**
  *
  * @author shokora
- * @todo Remove the argcount and add a list of parameters the command has.
- * These parameters will be added to a list and the command call will be checked for
- * an instance of these parameters. Then the list of parameters will be send to the run command
- * so the run command itself doesn't have to do any parameter checking.
  */
 public abstract class Command
 {
-    private int argCount;
-    private String description, name;
+    private String description, name, parameters;
+    private HashMap<String,String> parametersMap;
 
-    public Command(String name, int argCount, String description)
+    public Command(String name, String parameters, String description)
     {
         this.name = name;
-        this.argCount = argCount;
+        this.parameters = parameters;
         this.description = description;
+        parametersMap = new HashMap<String,String>();
+        getParameters();
     }
 
-    public String getToken()
+    public void getParameters()
+    {
+        StringTokenizer st = new StringTokenizer(parameters,",");
+
+        while(st.hasMoreTokens())
+        {
+            String[] splitted = st.nextToken().split(";");
+            parametersMap.put(splitted[0].substring(1), splitted[1]); //substring(1) to remove the leading -
+        }
+    }
+
+    /**
+     * It might seem ugly to use String,String even though we are going to save
+     * other kinds of objects in the map. But because this is a general function
+     * we have no way of knowing what kind of objects are going to be used as values
+     * that's why we just save it as Strings and later convert it to the right type.
+     *
+     * It will return all the Strings with their param name as key and their value as value.
+     * The rest will be returned with key Base and the rest of the values with spaces between them.
+     * For instance "search -dirsonly -page 2 family guy" will be:
+     * dirsonly -> true
+     * page -> 2
+     * base -> family guy
+     * @param args
+     */
+    public HashMap<String,String> fillParameters(ArrayList<String> args)
+    {
+        HashMap<String,String> parametersCurrent = new HashMap<String,String>();
+        int counter = 0; //counts when the last parameter is parsed so we know what the base call is
+
+        for(int i=0;i<args.size();i++)
+        {
+            String argument = args.get(i).substring(1);
+            if(parametersMap.containsKey(argument)) //substring(1) to remove the leading -
+            {
+                //If the value is 0 that means it's a boolean and it does not have a parameter
+                if(parametersMap.get(argument).equals("0"))
+                {
+                    parametersCurrent.remove(argument);
+                    parametersCurrent.put(argument, "true");
+                    counter++;
+                }
+                else
+                {
+                   parametersCurrent.remove(argument);
+                   parametersCurrent.put(argument, args.get(++i));
+                   counter+=2;
+                }
+            }
+        }
+
+        Set<String> keySet = parametersMap.keySet();
+        Iterator it = keySet.iterator();
+
+        while(it.hasNext())
+        {
+            String key = (String) it.next();
+            if(parametersCurrent.get(key) == null) //check if the key is in the set
+            {
+                parametersCurrent.put(key, ""); //if not put it in there with an empty string as value
+            }
+        }
+        
+
+        String baseCall = "";
+        for(int a=counter;a<args.size();a++)
+        {
+            baseCall += " "+args.get(a);
+        }
+
+        if(baseCall.length() > 0) baseCall = baseCall.substring(1);
+        parametersCurrent.put("base", baseCall); //substring(1) to remove the first leading space
+
+        return parametersCurrent;
+    }
+
+    public String getName()
     {
         return name;
-    }
-
-    public int getArgCount()
-    {
-        return argCount;
     }
 
     public String toString()
     {
         return description;
-    }
-
-    public boolean validizeCall(String token, ArrayList<String> args) //variable amount of arguments
-    {
-        return this.name.equals(token) && (argCount == -1 || args.size() == argCount);
     }
 
     public abstract void run(ArrayList<String> args);

@@ -10,7 +10,6 @@ import jcifs.smb.*;
 /**
  *©Shokora 2009
  * @author shokora
- * @todo make a standardized parameter scan function
  * @todo seperate all the command classes to make it more modulair and for suitable for usage in the GUI
  */
 public class cli
@@ -32,13 +31,13 @@ public class cli
         in = new Scanner(System.in);
 
         //add commands to the commandlist
-        commandList.add(new Search("search",-1,"Search on CampusSearch for the specified information"));
-        commandList.add(new Get("get",-1,"Get a file from the search results"));
-        commandList.add(new Open("open",-1,"Open a network resource"));
-        commandList.add(new ChangeDirectory("cd",1,"Change the current directory"));
-        commandList.add(new List("ls",0,"Get the file list from a directory"));
-        commandList.add(new Help("help",0,"Print this menu"));
-        commandList.add(new Exit("exit",0,"Exit this application"));
+        commandList.add(new Search("search","-dirsonly;0,-minsize;1,-maxsize;1,-page;1","Search on CampusSearch for the specified information"));
+        commandList.add(new Get("get","-s;0,-r;0","Get a file from the search results"));
+        commandList.add(new Open("open","-s;0","Open a network resource"));
+        commandList.add(new ChangeDirectory("cd","","Change the current directory"));
+        commandList.add(new List("ls","","Get the file list from a directory"));
+        commandList.add(new Help("help","","Print this menu"));
+        commandList.add(new Exit("exit","","Exit this application"));
 
         printMenu();
 
@@ -91,12 +90,11 @@ public class cli
     public void runCommand(Scanner scan)
     {
         ArrayList<String> pars = new ArrayList<String>();
-        String token = "";
+        String commandName = "";
 
-        int i = 0;
         if(scan.hasNext())
         {
-            token = scan.next();
+            commandName = scan.next();
             while(scan.hasNext())
             {
                 pars.add(scan.next());
@@ -105,7 +103,7 @@ public class cli
 
         for(Command command : commandList)
         {
-            if(command.validizeCall(token, pars))
+            if(command.getName().equals(commandName))
             {
                 command.run(pars);
                 return;
@@ -124,7 +122,7 @@ public class cli
 
         for(Command command : commandList)
         {
-            System.out.println(String.valueOf(command.getToken()+" "+command.toString()));
+            System.out.println(String.valueOf(command.getName()+" "+command.toString()));
         }
     }
 
@@ -174,60 +172,24 @@ public class cli
      */
     private class Search extends Command
     {
-        public Search(String token, int argCount, String description)
+        public Search(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
         {
+            HashMap<String,String> param = fillParameters(args);
             onlineResults = new ArrayList<SearchResult>();
-            String queryFlags = "";
 
-
-            //Check for flags, see the javadoc for meaning of the flags
-            for(int i=0;i<args.size();i++)
-            {
-                String arg = args.get(i);
-
-                if(arg.equals("-page"))
-                {
-                    try
-                    {
-                        queryFlags += "&page="+Integer.valueOf(args.get(i+1));
-                        args.set(i, "");
-                        args.set(++i, "");
-                    }
-                    catch(NumberFormatException e)
-                    {
-                        System.out.println("Error: the page has to be an integer");
-                        return;
-                    }
-                }
-                else if(arg.equals("-minsize"))
-                {
-                    queryFlags += "&minsize="+args.get(i+1);
-                    args.set(i, "");
-                    args.set(++i, "");
-                }
-                else if(arg.equals("-maxsize"))
-                {
-                    queryFlags += "&maxsize="+args.get(i+1);
-                    args.set(i, "");
-                    args.set(++i, "");
-                }
-                else if(arg.equals("-dirsonly"))
-                {
-                    queryFlags += "&dirsonly=yes";
-                    args.set(i, "");
-                }
-            }
-
-            String query = makeString(args,"+");
-            query = "http://search.student.utwente.nl/api/search?q="+query+queryFlags;
-            
             try
             {
+                String query = "http://search.student.utwente.nl/api/search?q="+param.get("base".replace(" ", "+"));
+                if(!param.get("page").equals("")) query += "&page="+param.get("page");
+                if(!param.get("minsize").equals("")) query += "&minsize="+param.get("minsize");
+                if(!param.get("maxsize").equals("")) query += "&maxsize="+param.get("maxsize");
+                if(param.get("dirsonly").equals("true")) query += "&dirsonly=true";
+                
                 System.out.println(query);
                 URL url = new URL(query);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -247,7 +209,8 @@ public class cli
             }
             catch(Exception e)
             {
-                System.out.println("Error: no results for this search query");
+                //System.out.println("Error: no results for this search query");
+                System.out.println("Error: "+e.getMessage());
             }
         }
     }
@@ -265,40 +228,29 @@ public class cli
      */
     private class Get extends Command
     {
-        public Get(String token, int argCount, String description)
+        public Get(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
         {
-            if(args.size() == 0)
+            HashMap<String,String> param = fillParameters(args);
+
+            if(param.get("base").equals(""))
             {
                 System.out.println("Error: you have to give some argument to get");
                 return;
             }
 
-            String call = makeString(args," ");
-            Scanner intScan = new Scanner(call);
-            int number = -1;
-
-            /*This is very ugly i will probably make it better later...
-             * If there is a number in the command the only possibility is that it's a file number
-             */
-            while(intScan.hasNext())
-            {
-                if(intScan.hasNextInt()) number = intScan.nextInt();
-                else intScan.next();
-            }
-
             SmbFile downloadFile = null;
 
             //Download a file from the search results with a number indicator
-            if(onlineResults != null && call.contains("-s"))
+            if(onlineResults != null && param.get("s").equals("true") )
             {
                 try
                 {
-                    SearchResult result = onlineResults.get(number);
+                    SearchResult result = onlineResults.get(Integer.valueOf(param.get("base")));
 
                     downloadFile = new SmbFile(result.getFullPath());
                 }
@@ -312,7 +264,7 @@ public class cli
                     System.out.println("Error: could not connect to the host");
                 }
             }
-            else if(onlineResults == null && call.contains("-s")) //You can't download search results if there are none
+            else if(onlineResults == null && param.get("s").equals("true")) //You can't download search results if there are none
             {
                 System.out.println("Error: you have to search something before you can download it");
             }
@@ -320,17 +272,17 @@ public class cli
             {
                 try
                 {
-                    String result = fileList.get(number);
+                    String result = fileList.get(Integer.valueOf(param.get("base")));
                     downloadFile = new SmbFile(result);
                 }
                 catch(NullPointerException e)
                 {
                     //take the full call because there are a lot of morons who use white spaces in filenames
-                    if(call.substring(0,6).equals("smb://")) //See if it's a full url because
+                    if(param.get("base").substring(0,6).equals("smb://")) //See if it's a full url because
                     {
                         try
                         {
-                            downloadFile = new SmbFile(call);
+                            downloadFile = new SmbFile(param.get("base"));
                         }
                         catch(Exception ex2)
                         {
@@ -365,7 +317,7 @@ public class cli
                    System.out.println("Download is done");
 
                 }
-                else if(downloadFile != null && downloadFile.isDirectory() && call.contains("-r"))
+                else if(downloadFile != null && downloadFile.isDirectory() && param.get("r").equals("true"))
                 {
                     new SDirectory(downloadFile).get(true);
                 }
@@ -386,9 +338,9 @@ public class cli
      */
     private class Help extends Command
     {
-        public Help(String token, int argCount, String description)
+        public Help(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
@@ -402,9 +354,9 @@ public class cli
      */
     private class Exit extends Command
     {
-        public Exit(String token, int argCount, String description)
+        public Exit(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
@@ -419,18 +371,20 @@ public class cli
      */
     private class ChangeDirectory extends Command
     {
-        public ChangeDirectory(String token, int argCount, String description)
+        public ChangeDirectory(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
         {
+            HashMap<String,String> param = fillParameters(args);
+
             try
             {
                 if(currentDir != null)
                 {
-                    if(args.get(0).equals(".."))
+                    if(param.get("base").equals(".."))
                     {
                         currentDir = new SDirectory(currentDir.getSMBFile().getParent());
                         fileList = currentDir.listFiles(false, false); //update the filelist or shit will fuck up
@@ -441,12 +395,12 @@ public class cli
 
                         try
                         {
-                            directory = fileList.get(Integer.valueOf(args.get(0)));
+                            directory = fileList.get(Integer.valueOf(param.get("base")));
                         }
                         catch(NumberFormatException e)
                         {
-                            args.set(0,validizeDirectory(args.get(0)));
-                            directory = currentDir.getSMBFile().getPath()+args.get(0);
+                            args.set(0,validizeDirectory(param.get("base")));
+                            directory = currentDir.getSMBFile().getPath()+param.get("base");
                         }
 
                         try
@@ -480,19 +434,21 @@ public class cli
      */
     private class Open extends Command
     {
-        public Open(String token, int argCount, String description)
+        public Open(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)
         {
+            HashMap<String,String> param = fillParameters(args);
+
             String openDir = "";
-            if(makeString(args," ").contains("-s") && onlineResults != null)
+            if(param.get("s").equals("true") && onlineResults != null)
             {
                 try
                 {
-                    openDir = validizeDirectory(onlineResults.get(Integer.valueOf(args.get(1))).getFullPath());
+                    openDir = validizeDirectory(onlineResults.get(Integer.valueOf(param.get("base"))).getFullPath());
                 }
                 catch(NumberFormatException e)
                 {
@@ -501,7 +457,7 @@ public class cli
             }
             else
             {
-                openDir = validizeDirectory(args.get(0));
+                openDir = validizeDirectory(param.get("base"));
             }
 
             if(!openDir.equals(""))
@@ -524,9 +480,9 @@ public class cli
      */
     private class List extends Command
     {
-        public List(String token, int argCount, String description)
+        public List(String token, String parameters, String description)
         {
-            super(token,argCount,description);
+            super(token,parameters,description);
         }
 
         public void run(ArrayList<String> args)

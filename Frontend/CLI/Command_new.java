@@ -20,17 +20,17 @@ public abstract class Command_new
         this.name = name;
         this.parameters = parameters;
         this.description = description;
+        parametersMap = new HashMap<String,String>();
         getParameters();
     }
 
     public void getParameters()
     {
-        Scanner scanner = new Scanner(this.parameters);
+        StringTokenizer st = new StringTokenizer(parameters,",");
 
-
-        while(scanner.hasNext(".*,"))
+        while(st.hasMoreTokens())
         {
-            parametersMap.put(scanner.next(), "");
+            parametersMap.put(st.nextToken(), "");
         }
     }
 
@@ -52,11 +52,12 @@ public abstract class Command_new
                 parametersCurrent.remove(args.get(i));
                 if(args.get(i+1).charAt(0) == '-')
                 {
-                    parametersCurrent.put(args.get(i), args.get(++i));
+
+                    parametersCurrent.put(args.get(i).substring(1), "true");
                 }
                 else
                 {
-                    parametersCurrent.put(args.get(i), "true");
+                   parametersCurrent.put(args.get(i).substring(1), args.get(++i));
                 }
             }
         }
@@ -64,7 +65,7 @@ public abstract class Command_new
         return parametersMap;
     }
 
-    public String getToken()
+    public String getName()
     {
         return name;
     }
