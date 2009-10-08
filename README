@@ -1,36 +1,44 @@
-Prometheus Development Alpha
+Prometheus Beta 0.1
 
-Because I am currently implementing a lot of other things and I am very lazy I didn't
-implement a proper command-help system yet. Never the less it would be pretty useless
-to implement a lot of features but not give people the knowledge to actually use them
-so here is everything you need to know:
+After all these years in the darkness of campusnet, Prometheus is here to give humanity
+the fire of downloading. Ok maybe it's not so great, and hopefully I will not be equally
+punished for it.
 
-First, the config file is in Backend/config.properties, this will change in an actual release
-but for now you have to use that to set the downloadfolder.
+Prometheus will however try to bring a new way of downloading to campusnet. The ultimate
+goal is to create a new download experience in cooperation with campussearch. This CLI
+client is only a small bit of what prometheus will become. A GUI client will also come
+plus a daemon that aims to automate downloading as much as possible, together with
+cool features on the campussearch website.
 
-The flags for search:
--dirsonly           | Only directories are listed
--minsize            | Minimum size of the file, like 1G or 2MB or whatever
--maxsize            | Maximum size of the file, like 2G or 3MB or whatever
--page               | There are 29 results on a page so page n means result n*29 to (n+1)*29
+I choose to create the CLI client first because that was my biggest problem with campusnet
+at the moment. You can download things simply with v-direct, but if you don't have access
+to a windowmanager (downloading over ssh for instance), downloading from campusnet can be
+pretty painful.
 
-You can open SMB servers with the open command like:
-open smb://shokora/
-But you can also open a directory from the search results like:
-open -s 23
+Since this is a beta version i would like to ask everyone to use it and give me feedback
+about it. If you have a great idea how to download a file, browse a share or you did something
+weird (or not) and the whole thing broke down just send me a message. While it is platform independant
+software it has not been tested on many systems, so it is possible that it doesn't work on your system.
 
-You can download files by going into an SMB server and traveling to the file you need with cd
-then there are multiple options. You can either do:
-get directory/ or get 4 to get file 4
-You can also download a full smb:// url and what you will probably do is download a file from the
-search results with:
-get -s 12
+===Installation
+You _must_ have JDK 1.5 or higher installed.
 
-You can download both files and directories.
+Then it's pretty easy, just unzip the file somewhere and edit the configfile.
+In the configfile the only thing you have to set right now is "downloadDirectory" for instance:
+downloadDirectory=/home/test/Downloads or downloadDirectory=c:\downloads\
 
-Many more features will come :) I aim it to be as flexible as possible
+===Bugs && feedback
+Please add your bugreports and feedback on the sourceforge or send me an email to shokora@gmail.com
+P.S If you are good at coding GUIs and you want to help please contact me.
 
+===License
+GPLv3 (check the COPYING file)
+The source repository is at http://www.github.com/shokora/Prometheus/
 
-Greetings,
-
+===Developers
 Shokora
+
+===Special Thanks
+ddofborg for supporting the project and making a XML interface :)
+
+
