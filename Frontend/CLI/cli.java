@@ -5,6 +5,7 @@ import Branch.Shokora.Backend.XML.*;
 import Branch.Shokora.Backend.*;
 import java.net.*;
 import jcifs.smb.*;
+import java.io.*;
 
 
 /**
@@ -36,6 +37,7 @@ public class cli
         commandList.add(new Open("open","-s;0","Open a network resource"));
         commandList.add(new ChangeDirectory("cd","","Change the current directory"));
         commandList.add(new List("ls","","Get the file list from a directory"));
+        commandList.add(new Set("set","-downloadDir;1,-p;1","Used for setting configsettings"));
         commandList.add(new Help("help","","Print this menu"));
         commandList.add(new Exit("exit","","Exit this application"));
 
@@ -277,34 +279,35 @@ public class cli
                 }
                 catch(NullPointerException e)
                 {
-                    //take the full call because there are a lot of morons who use white spaces in filenames
-                    if(param.get("base").substring(0,6).equals("smb://")) //See if it's a full url because
+                    try
                     {
-                        try
-                        {
-                            downloadFile = new SmbFile(param.get("base"));
-                        }
-                        catch(Exception ex2)
-                        {
-                            System.out.println("Error: "+ex2.getMessage());
-                        }
+                        downloadFile = new SmbFile(currentDir+args.get(0));
                     }
-                    else //If it's not a full url it's probably the name of a file in the current dir
+                    catch(Exception ex3)
                     {
-                        try
-                        {
-                            downloadFile = new SmbFile(currentDir+args.get(0));
-                        }
-                        catch(Exception ex3)
-                        {
-                            System.out.println("Error: "+ex3.getMessage());
-                        }
+                        System.out.println("Error: "+ex3.getMessage());
                     }
                 }
                 catch(MalformedURLException ex1)
                 {
                     System.out.println("Error: "+ex1.getMessage());
                 }
+            }
+            else if(param.get("base").substring(0,6).equals("smb://")) //See if it's a full url because
+            {
+                try
+                {
+                    downloadFile = new SmbFile(param.get("base"));
+                }
+                catch(Exception ex2)
+                {
+                    System.out.println("Error: "+ex2.getMessage());
+                }
+            }
+            else
+            {
+                System.out.println("Error: i have no idea what you mean by that...");
+                return;
             }
 
             try
@@ -399,8 +402,8 @@ public class cli
                         }
                         catch(NumberFormatException e)
                         {
-                            args.set(0,validizeDirectory(param.get("base")));
-                            directory = currentDir.getSMBFile().getPath()+param.get("base");
+                            String directoryName = validizeDirectory(param.get("base"));
+                            directory = currentDir.getSMBFile().getPath()+directoryName;
                         }
 
                         try
@@ -505,6 +508,45 @@ public class cli
                 {
                     System.out.println("Error: "+e.getMessage());
                 }
+            }
+        }
+    }
+
+    private class Set extends Command
+    {
+        public Set(String token, String parameters, String description)
+        {
+            super(token,parameters,description);
+        }
+
+        public void run(ArrayList<String> args)
+        {
+            HashMap<String,String> param = fillParameters(args);
+
+            //Because the workdir situation in java is kind of retarded, this only works in the jar ._.'
+            try
+            {
+                File configFile = new File("config.properties");
+                InputStream input = new BufferedInputStream(new FileInputStream(configFile.getAbsoluteFile()));
+                OutputStream output = new BufferedOutputStream(new FileOutputStream(configFile));
+
+                Properties configProperties = new Properties();
+                configProperties.load(input);
+
+                if(!param.get("downloadDir").equals(""))
+                {
+                    configProperties.setProperty("downloadDir", param.get("downloadDir"));
+
+                    configProperties.store(output,"");
+                }
+                else if(!param.get("p").equals(""))
+                {
+                    System.out.println(param.get("p")+" == "+configProperties.getProperty(param.get("p")));
+                }
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: "+e.getMessage());
             }
         }
     }

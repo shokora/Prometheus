@@ -19,6 +19,7 @@ public class SDirectory
     public SDirectory(String url) throws Exception
     {
         this.url = url;
+
         try
         {
             smbFile = new SmbFile(url);
