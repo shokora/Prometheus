@@ -1,7 +1,7 @@
 Prometheus Beta 0.1
 
 After all these years in the darkness of campusnet, Prometheus is here to give humanity
-the fire of downloading. Ok maybe it's not so great, and hopefully I will not be equally
+the fire of downloading. Ok maybe it's not that great, and hopefully I will not be equally
 punished for it.
 
 Prometheus will however try to bring a new way of downloading to campusnet. The ultimate
@@ -17,7 +17,7 @@ pretty painful.
 
 Since this is a beta version i would like to ask everyone to use it and give me feedback
 about it. If you have a great idea how to download a file, browse a share or you did something
-weird (or not) and the whole thing broke down just send me a message. While it is platform independant
+weird (or not) and the whole thing broke down just send me a message. While it is platform independent
 software it has not been tested on many systems, so it is possible that it doesn't work on your system.
 
 ===Installation
@@ -28,7 +28,7 @@ In the configfile the only thing you have to set right now is "downloadDirectory
 downloadDirectory=/home/test/Downloads or downloadDirectory=c:\downloads\
 
 ===Bugs && feedback
-Please add your bugreports and feedback on the sourceforge or send me an email to shokora@gmail.com
+Please add your bugreports and feedback on the github or send me an email to shokora@gmail.com
 P.S If you are good at coding GUIs and you want to help please contact me.
 
 ===License
