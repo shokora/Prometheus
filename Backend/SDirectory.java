@@ -9,6 +9,20 @@ import java.io.*;
  *
  * @author shokora
  * @date May 11, 2009
+ *     This file is part of Prometheus.
+
+    Prometheus is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Prometheus is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class SDirectory
 {
@@ -48,9 +62,13 @@ public class SDirectory
     {
         try
         {
-          Properties configFile = new Properties();
-          configFile.load(this.getClass().getResourceAsStream("config.properties"));
-          downloadDir = configFile.getProperty("downloadDir",".")+"/"+this.getSMBFile().getName();
+            File configFile = new File("config.properties");
+            InputStream input = new BufferedInputStream(new FileInputStream(configFile.getAbsoluteFile()));
+
+            Properties configProperties = new Properties();
+            configProperties.load(input);
+            downloadDir = configProperties.getProperty("downloadDir",".")+"/"+this.getSMBFile().getName();
+            System.out.println(configFile.getAbsoluteFile());
         }
         catch(Exception e)
         {
@@ -159,7 +177,7 @@ public class SDirectory
             for(String file : fileList)
             {
                 SFile smbFile = new SFile(file);
-                smbFile.setLocal(downloadDir);
+                smbFile.setDownloadDir(downloadDir);
 
                 if(smbFile.getSMBFile().isFile())
                 {

@@ -5,6 +5,20 @@ import java.util.*;
 /**
  *
  * @author shokora
+ *     This file is part of Prometheus.
+
+    Prometheus is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Prometheus is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
  */
 public abstract class Command
 {
@@ -82,7 +96,7 @@ public abstract class Command
                 parametersCurrent.put(key, ""); //if not put it in there with an empty string as value
             }
         }
-        
+
 
         String baseCall = "";
         for(int a=counter;a<args.size();a++)

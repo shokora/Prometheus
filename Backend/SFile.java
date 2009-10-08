@@ -9,6 +9,22 @@ import java.util.*;
  * @author shokora
  * @date May 7, 2009
  * @description This represents a file from the network
+ *
+ *
+    This file is part of Prometheus.
+
+    Prometheus is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Prometheus is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class SFile
 {
@@ -52,9 +68,12 @@ public class SFile
 
         try
         {
-          Properties configFile = new Properties();
-          configFile.load(this.getClass().getResourceAsStream("config.properties"));
-          downloadDir = configFile.getProperty("downloadDir",".");
+            File configFile = new File("config.properties");
+            InputStream input = new BufferedInputStream(new FileInputStream(configFile.getAbsoluteFile()));
+
+            Properties configProperties = new Properties();
+            configProperties.load(input);
+            downloadDir = configProperties.getProperty("downloadDir",".");
         }
         catch(Exception e)
         {
@@ -98,8 +117,13 @@ public class SFile
         return smbFile;
     }
 
-    public void setLocal(String local)
+    public void setDownloadDir(String local)
     {
         this.downloadDir = local;
+    }
+
+    public String getDownloadDir()
+    {
+        return this.downloadDir;
     }
 }

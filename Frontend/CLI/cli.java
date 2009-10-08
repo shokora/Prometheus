@@ -11,7 +11,20 @@ import java.io.*;
 /**
  *©Shokora 2009
  * @author shokora
- * @todo seperate all the command classes to make it more modulair and for suitable for usage in the GUI
+ *     This file is part of Prometheus.
+
+    Prometheus is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Prometheus is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class cli
 {
@@ -37,7 +50,6 @@ public class cli
         commandList.add(new Open("open","-s;0","Open a network resource"));
         commandList.add(new ChangeDirectory("cd","","Change the current directory"));
         commandList.add(new List("ls","","Get the file list from a directory"));
-        commandList.add(new Set("set","-downloadDir;1,-p;1","Used for setting configsettings"));
         commandList.add(new Help("help","","Print this menu"));
         commandList.add(new Exit("exit","","Exit this application"));
 
@@ -120,7 +132,7 @@ public class cli
      */
     public void printMenu()
     {
-        System.out.println("Prometheus dev 0.01");
+        System.out.println("Prometheus beta 0.1");
 
         for(Command command : commandList)
         {
@@ -192,7 +204,6 @@ public class cli
                 if(!param.get("maxsize").equals("")) query += "&maxsize="+param.get("maxsize");
                 if(param.get("dirsonly").equals("true")) query += "&dirsonly=true";
                 
-                System.out.println(query);
                 URL url = new URL(query);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
@@ -293,7 +304,7 @@ public class cli
                     System.out.println("Error: "+ex1.getMessage());
                 }
             }
-            else if(param.get("base").substring(0,6).equals("smb://")) //See if it's a full url because
+            else if(param.get("base").length() > 6 && param.get("base").substring(0,6).equals("smb://")) //See if it's a full url because
             {
                 try
                 {
@@ -316,8 +327,9 @@ public class cli
                 {
 
                    System.out.println("Getting file: "+downloadFile.getName());
-                   new SFile(downloadFile).get();
-                   System.out.println("Download is done");
+                   SFile download = new SFile(downloadFile);
+                   download.get();
+                   System.out.println("Download is done, it's stored at "+download.getDownloadDir()+download.getSMBFile().getName());
 
                 }
                 else if(downloadFile != null && downloadFile.isDirectory() && param.get("r").equals("true"))
@@ -348,7 +360,19 @@ public class cli
 
         public void run(ArrayList<String> args)
         {
-            printMenu();
+            HashMap<String,String> param = fillParameters(args);
+
+            try
+            {
+                Properties configFile = new Properties();
+                configFile.load(this.getClass().getResourceAsStream("Help.properties"));
+                String penis = configFile.getProperty(param.get("base"));
+                System.out.println(penis);
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: cannot read the help file, something is wrong...");
+            }
         }
     }
 
@@ -508,45 +532,6 @@ public class cli
                 {
                     System.out.println("Error: "+e.getMessage());
                 }
-            }
-        }
-    }
-
-    private class Set extends Command
-    {
-        public Set(String token, String parameters, String description)
-        {
-            super(token,parameters,description);
-        }
-
-        public void run(ArrayList<String> args)
-        {
-            HashMap<String,String> param = fillParameters(args);
-
-            //Because the workdir situation in java is kind of retarded, this only works in the jar ._.'
-            try
-            {
-                File configFile = new File("config.properties");
-                InputStream input = new BufferedInputStream(new FileInputStream(configFile.getAbsoluteFile()));
-                OutputStream output = new BufferedOutputStream(new FileOutputStream(configFile));
-
-                Properties configProperties = new Properties();
-                configProperties.load(input);
-
-                if(!param.get("downloadDir").equals(""))
-                {
-                    configProperties.setProperty("downloadDir", param.get("downloadDir"));
-
-                    configProperties.store(output,"");
-                }
-                else if(!param.get("p").equals(""))
-                {
-                    System.out.println(param.get("p")+" == "+configProperties.getProperty(param.get("p")));
-                }
-            }
-            catch(IOException e)
-            {
-                System.out.println("Error: "+e.getMessage());
             }
         }
     }
