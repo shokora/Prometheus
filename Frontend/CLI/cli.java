@@ -198,11 +198,13 @@ public class cli
 
             try
             {
-                String query = "http://search.student.utwente.nl/api/search?q="+param.get("base".replace(" ", "+"));
+                String query = "http://search.student.utwente.nl/api/search?q="+param.get("base").replace(' ', '+');
                 if(!param.get("page").equals("")) query += "&page="+param.get("page");
                 if(!param.get("minsize").equals("")) query += "&minsize="+param.get("minsize");
                 if(!param.get("maxsize").equals("")) query += "&maxsize="+param.get("maxsize");
                 if(param.get("dirsonly").equals("true")) query += "&dirsonly=true";
+
+                System.out.println(query);
                 
                 URL url = new URL(query);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -222,8 +224,8 @@ public class cli
             }
             catch(Exception e)
             {
-                //System.out.println("Error: no results for this search query");
-                System.out.println("Error: "+e.getMessage());
+                System.out.println("Error: no results for this search query");
+                //System.out.println("Error: "+e.getMessage());
             }
         }
     }
