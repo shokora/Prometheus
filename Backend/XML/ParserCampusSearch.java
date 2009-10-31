@@ -1,6 +1,6 @@
-package Branch.Shokora.Backend.XML;
+package Backend.XML;
 
-import Branch.Shokora.Backend.*;
+import Backend.*;
 import java.io.*;
 import java.util.*;
 import org.w3c.dom.*;

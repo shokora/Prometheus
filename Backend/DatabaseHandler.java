@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package Branch.Shokora.Backend;
+package Backend;
 
 
 import java.sql.*;

@@ -1,8 +1,8 @@
-package Branch.Shokora.Frontend.CLI;
+package Frontend.CLI;
 
 import java.util.*;
-import Branch.Shokora.Backend.XML.*;
-import Branch.Shokora.Backend.*;
+import Backend.XML.*;
+import Backend.*;
 import java.net.*;
 import jcifs.smb.*;
 import java.io.*;
