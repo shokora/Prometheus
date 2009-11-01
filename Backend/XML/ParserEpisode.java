@@ -19,7 +19,7 @@ package Backend.XML;
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Branch.Shokora.Backend.*;
+import Backend.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;

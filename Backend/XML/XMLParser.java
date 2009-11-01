@@ -1,8 +1,6 @@
 package Backend.XML;
 
 import java.io.*;
-import java.util.*;
-import java.util.regex.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
