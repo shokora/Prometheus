@@ -75,6 +75,11 @@ public class SFile
             configProperties.load(input);
             downloadDir = configProperties.getProperty("downloadDir",".");
         }
+        catch(FileNotFoundException e)
+        {
+        	//File doesn't exist, assume the default value for downloadDir: "."
+            downloadDir = ".";
+        }
         catch(Exception e)
         {
             System.out.println("Error: "+e.getMessage());
