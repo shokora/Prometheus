@@ -70,6 +70,11 @@ public class SDirectory
             downloadDir = configProperties.getProperty("downloadDir",".")+"/"+this.getSMBFile().getName();
             System.out.println(configFile.getAbsoluteFile());
         }
+        catch(FileNotFoundException e)
+        {
+        	//File doesn't exist, assume the default value for downloadDir: "."
+            downloadDir = ".";
+        }
         catch(Exception e)
         {
             System.out.println("Error: "+e.getMessage());
