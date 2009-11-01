@@ -363,17 +363,27 @@ public class cli
         public void run(ArrayList<String> args)
         {
             HashMap<String,String> param = fillParameters(args);
+            BufferedReader input = null;
 
             try
             {
-                Properties configFile = new Properties();
-                configFile.load(this.getClass().getResourceAsStream("Help.properties"));
-                String penis = configFile.getProperty(param.get("base"));
-                System.out.println(penis);
+//                Properties configFile = new Properties();
+//                configFile.load(this.getClass().getResourceAsStream("Help.properties"));
+//                String penis = configFile.getProperty(param.get("base"));
+//                System.out.println(penis);
+                input = new BufferedReader(new FileReader("Help.properties"));
+                String l;
+                while ((l = input.readLine()) != null) {
+                    System.out.println(l);
+                }
+                input.close();
+
+                
             }
             catch(IOException e)
             {
-                System.out.println("Error: cannot read the help file, something is wrong...");
+                System.out.println(e.getMessage());
+            	System.out.println("Error: cannot read the help file, something is wrong...");
             }
         }
     }
