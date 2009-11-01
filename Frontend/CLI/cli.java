@@ -371,7 +371,7 @@ public class cli
 //                configFile.load(this.getClass().getResourceAsStream("Help.properties"));
 //                String penis = configFile.getProperty(param.get("base"));
 //                System.out.println(penis);
-                input = new BufferedReader(new FileReader("Help.properties"));
+                input = new BufferedReader(new FileReader("Frontend/CLI/Help.properties"));
                 String l;
                 while ((l = input.readLine()) != null) {
                     System.out.println(l);
