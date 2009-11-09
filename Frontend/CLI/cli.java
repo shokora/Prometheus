@@ -203,8 +203,6 @@ public class cli
                 if(!param.get("minsize").equals("")) query += "&minsize="+param.get("minsize");
                 if(!param.get("maxsize").equals("")) query += "&maxsize="+param.get("maxsize");
                 if(param.get("dirsonly").equals("true")) query += "&dirsonly=true";
-
-                System.out.println(query);
                 
                 URL url = new URL(query);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -419,6 +417,7 @@ public class cli
             {
                 if(currentDir != null)
                 {
+                    fileList = currentDir.listFiles(false, false); //If you don't do this you can't cd unless you listfiles first
                     if(param.get("base").equals(".."))
                     {
                         currentDir = new SDirectory(currentDir.getSMBFile().getParent());
