@@ -1,17 +1,5 @@
-package Frontend.CLI;
-
-import java.util.*;
-import Backend.XML.*;
-import Backend.*;
-import java.net.*;
-import jcifs.smb.*;
-import java.io.*;
-
-
-/**
- *©Shokora 2009
- * @author shokora
- *     This file is part of Prometheus.
+/*
+    This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +13,21 @@ import java.io.*;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package Frontend.CLI;
+
+import java.util.*;
+import Backend.XML.*;
+import Backend.*;
+import java.net.*;
+import jcifs.smb.*;
+import java.io.*;
+
+
+/**
+ *©Shokora 2009
+ * @author shokora
+ * @author mrijke
  */
 public class cli
 {

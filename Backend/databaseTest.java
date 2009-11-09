@@ -1,11 +1,5 @@
-package Backend;
-
-import java.sql.*;
-/**
- *
- * @author shokora
- * @date May 18, 2009
- *     This file is part of Prometheus.
+/*
+    This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +13,15 @@ import java.sql.*;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+package Backend;
+
+import java.sql.*;
+/**
+ *
+ * @author shokora
+ * @author mrijke
+*/
 public class databaseTest {
     
     public static void main(String[] args)

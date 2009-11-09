@@ -1,15 +1,5 @@
-package Backend;
-
-import jcifs.smb.*;
-import java.util.regex.*;
-import java.util.*;
-import java.io.*;
-
-/**
- *
- * @author shokora
- * @date May 11, 2009
- *     This file is part of Prometheus.
+/*
+    This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +13,18 @@ import java.io.*;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package Backend;
+
+import jcifs.smb.*;
+import java.util.regex.*;
+import java.util.*;
+import java.io.*;
+
+/**
+ *
+ * @author shokora
+ * @author mrijke
  */
 public class SDirectory
 {

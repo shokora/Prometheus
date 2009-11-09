@@ -1,16 +1,4 @@
-package Backend;
-
-import jcifs.smb.*;
-import java.io.*;
-import java.util.*;
-
-/**
- *
- * @author shokora
- * @date May 7, 2009
- * @description This represents a file from the network
- *
- *
+/*
     This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
@@ -25,7 +13,18 @@ import java.util.*;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+package Backend;
+
+import jcifs.smb.*;
+import java.io.*;
+import java.util.*;
+
+/**
+ * @author shokora
+ * @author mrijke
+ * @description This represents a file from the network
+*/
 public class SFile
 {
     String url;
