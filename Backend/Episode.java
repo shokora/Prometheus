@@ -1,9 +1,5 @@
-package Backend;
-
-/**
- *
- * @author shokora
- *     This file is part of Prometheus.
+/*
+    This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +13,13 @@ package Backend;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package Backend;
+
+/**
+ * @author shokora
+ * @author mrijke
  */
 public class Episode
 {

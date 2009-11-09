@@ -1,17 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package Backend;
-
-import Frontend.CLI.*;
-import java.util.*;
-
-/**
- *
- * @author Administrator
- *     This file is part of Prometheus.
+    This file is part of Prometheus.
 
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +13,17 @@ import java.util.*;
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+
+package Backend;
+
+import Frontend.CLI.*;
+import java.util.*;
+
+/**
+ * @author shokora
+ * @author mrijke
+*/
 public class test
 {
     public static void main(String[] args)
