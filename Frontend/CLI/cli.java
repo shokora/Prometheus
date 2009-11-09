@@ -465,6 +465,7 @@ public class cli
     /**
      * Open a SMB repository
      * -s for opening a directory in a search result
+     * If you try to open a file from the search results you open the parent directory
      */
     private class Open extends Command
     {
@@ -498,7 +499,10 @@ public class cli
             {
                 try
                 {
-                    currentDir = new SDirectory(openDir);
+                    SmbFile temp = new SmbFile(openDir);
+
+                    if(temp.isFile()) temp = new SmbFile(temp.getParent()); //If you try to open a file you open the parent directory
+                    currentDir = new SDirectory(temp);
                 }
                 catch(Exception e)
                 {
