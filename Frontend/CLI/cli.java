@@ -36,10 +36,10 @@ public class cli
 
     public static void main(String[] args)
     {
-        new cli();
+        new cli(args);
     }
 
-    public cli()
+    public cli(String[] args)
     {
         commandList = new ArrayList<Command>();
         in = new Scanner(System.in);
@@ -53,11 +53,18 @@ public class cli
         commandList.add(new Help("help","","Print this menu"));
         commandList.add(new Exit("exit","","Exit this application"));
 
-        printMenu();
-
-        while(true)
+        if(args.length > 0)
         {
-            runCommand(readCommand());
+            executeCommandFromString("get "+args[0]);
+        }
+        else
+        {
+            printMenu();
+
+            while(true)
+            {
+                runCommand(readCommand());
+            }
         }
     }
 
@@ -173,6 +180,16 @@ public class cli
         }
 
         return directory;
+    }
+
+    /**
+     * This is not very pretty and it will be changed when the whole interfacemodel
+     * is going to be changed. Until then, this should work.
+     * @param call - get smb://example/example.txt
+     */
+    public void executeCommandFromString(String call)
+    {
+        runCommand(new Scanner(call));
     }
 
     /**
