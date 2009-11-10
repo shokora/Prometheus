@@ -22,6 +22,7 @@ package Backend;
  *
  * @author shokora
  * @author mrijke
+*/
 public class SearchResult
 {
     String netbiosName, directory, filename, fullPath, type;
