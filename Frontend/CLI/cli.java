@@ -88,13 +88,26 @@ public class cli
     {
         String command="", current="";
         if(currentDir != null) current = currentDir.getCutPath();
+        if(fileList != null)
+        {
+           Iterator completors = reader.getCompletors().iterator();
+
+           while(completors.hasNext())
+           {
+               reader.removeCompletor((Completor) completors.next());
+           }
+
+           String fileCompletion[] = new String[fileList.size()];
+           fileList.toArray(fileCompletion);
+
+           reader.addCompletor(new SimpleCompletor(fileCompletion));
+        }
 
         while(command.equals(""))
         {
             try
             {
                 command = reader.readLine(current+"> ");
-                System.out.println("Command: "+command);
             }
             catch(IOException e)
             {
