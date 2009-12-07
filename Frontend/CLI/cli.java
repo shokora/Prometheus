@@ -6,6 +6,7 @@ import Backend.*;
 import java.net.*;
 import jcifs.smb.*;
 import java.io.*;
+import jline.*;
 
 
 /**
@@ -33,6 +34,7 @@ public class cli
     private ArrayList<String> fileList;
     private SDirectory currentDir;
     private Scanner in;
+    private ConsoleReader reader;
 
     public static void main(String[] args)
     {
@@ -61,44 +63,43 @@ public class cli
         {
             printMenu();
 
+            try
+            {
+                reader = new ConsoleReader();
+                reader.setBellEnabled(false);
+                reader.getTerminal().disableEcho();
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: "+e.getMessage());
+            }
+
             while(true)
             {
                 runCommand(readCommand());
             }
         }
     }
-
-    /**
-     * Read a line from the commandline
-     * @return the line of input
-     */
-    public String readLine()
-    {
-        String current = "";
-
-        if(currentDir != null) current = currentDir.getCutPath();
-
-        System.out.print("Command:"+current+"$ ");System.out.flush();
-        
-        if(in.hasNextLine())
-        {
-            return in.nextLine();
-        }
-
-        return "";
-    }
-
     /**
      * Make sure the command isn't empty
      * @return
      */
     public Scanner readCommand()
     {
-        String command="";
+        String command="", current="";
+        if(currentDir != null) current = currentDir.getCutPath();
 
         while(command.equals(""))
         {
-            command = readLine();
+            try
+            {
+                command = reader.readLine(current+"> ");
+                System.out.println("Command: "+command);
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: "+e.getMessage());
+            }
         }
 
         return new Scanner(command);
