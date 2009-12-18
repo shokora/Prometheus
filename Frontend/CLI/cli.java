@@ -1,6 +1,8 @@
-/*
-    This file is part of Prometheus.
-
+/**
+ *©Shokora 2009
+ * @author shokora
+ * @author mrijke
+ *     This file is part of Prometheus.
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -36,13 +38,14 @@ public class cli
     private ArrayList<String> fileList;
     private SDirectory currentDir;
     private Scanner in;
+    private ConsoleReader reader;
 
     public static void main(String[] args)
     {
-        new cli();
+        new cli(args);
     }
 
-    public cli()
+    public cli(String[] args)
     {
         commandList = new ArrayList<Command>();
         in = new Scanner(System.in);
@@ -56,45 +59,64 @@ public class cli
         commandList.add(new Help("help","","Print this menu"));
         commandList.add(new Exit("exit","","Exit this application"));
 
-        printMenu();
-
-        while(true)
+        if(args.length > 0)
         {
-            runCommand(readCommand());
+            executeCommandFromString("get "+args[0]);
+        }
+        else
+        {
+            printMenu();
+
+            try
+            {
+                reader = new ConsoleReader();
+                reader.setBellEnabled(false);
+                reader.getTerminal().disableEcho();
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: "+e.getMessage());
+            }
+
+            while(true)
+            {
+                runCommand(readCommand());
+            }
         }
     }
-
-    /**
-     * Read a line from the commandline
-     * @return the line of input
-     */
-    public String readLine()
-    {
-        String current = "";
-
-        if(currentDir != null) current = currentDir.getCutPath();
-
-        System.out.print("Command:"+current+"$ ");System.out.flush();
-        
-        if(in.hasNextLine())
-        {
-            return in.nextLine();
-        }
-
-        return "";
-    }
-
     /**
      * Make sure the command isn't empty
      * @return
      */
     public Scanner readCommand()
     {
-        String command="";
+        String command="", current="";
+        if(currentDir != null) current = currentDir.getCutPath();
+        if(fileList != null)
+        {
+           Iterator completors = reader.getCompletors().iterator();
+
+           while(completors.hasNext())
+           {
+               reader.removeCompletor((Completor) completors.next());
+           }
+
+           String fileCompletion[] = new String[fileList.size()];
+           fileList.toArray(fileCompletion);
+
+           reader.addCompletor(new SimpleCompletor(fileCompletion));
+        }
 
         while(command.equals(""))
         {
-            command = readLine();
+            try
+            {
+                command = reader.readLine(current+"> ");
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error: "+e.getMessage());
+            }
         }
 
         return new Scanner(command);
@@ -176,6 +198,16 @@ public class cli
         }
 
         return directory;
+    }
+
+    /**
+     * This is not very pretty and it will be changed when the whole interfacemodel
+     * is going to be changed. Until then, this should work.
+     * @param call - get smb://example/example.txt
+     */
+    public void executeCommandFromString(String call)
+    {
+        runCommand(new Scanner(call));
     }
 
     /**
