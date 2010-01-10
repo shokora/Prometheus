@@ -94,10 +94,10 @@ public class cli
         {
            Iterator completors = reader.getCompletors().iterator();
 
-  //         while(completors.hasNext())
-    //       {
-      //         reader.removeCompletor((Completor) completors.next());
-        //   }
+           while(completors.hasNext())
+           {
+               reader.removeCompletor((Completor) completors.next());
+           }
            String fileCompletion[] = new String[fileList.size()];
            fileList.toArray(fileCompletion);
 
