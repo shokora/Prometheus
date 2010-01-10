@@ -1,8 +1,20 @@
+package Frontend.CLI;
+
+import java.util.*;
+import Backend.XML.*;
+import Backend.*;
+import java.net.*;
+import jcifs.smb.*;
+import java.io.*;
+
+import jline.*;
+
+
 /**
  *©Shokora 2009
  * @author shokora
- * @author mrijke
  *     This file is part of Prometheus.
+
     Prometheus is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -15,22 +27,7 @@
 
     You should have received a copy of the GNU General Public License
     along with Prometheus.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package Frontend.CLI;
-
-import java.util.*;
-import Backend.XML.*;
-import Backend.*;
-import java.net.*;
-import jcifs.smb.*;
-import java.io.*;
-
-
-/**
- *©Shokora 2009
- * @author shokora
- * @author mrijke
-*/
+ */
 public class cli
 {
     private ArrayList<Command> commandList;
@@ -91,32 +88,34 @@ public class cli
     public Scanner readCommand()
     {
         String command="", current="";
+        boolean emptyCommand = true;
         if(currentDir != null) current = currentDir.getCutPath();
         if(fileList != null)
         {
            Iterator completors = reader.getCompletors().iterator();
 
-           while(completors.hasNext())
-           {
-               reader.removeCompletor((Completor) completors.next());
-           }
-
+  //         while(completors.hasNext())
+    //       {
+      //         reader.removeCompletor((Completor) completors.next());
+        //   }
            String fileCompletion[] = new String[fileList.size()];
            fileList.toArray(fileCompletion);
 
            reader.addCompletor(new SimpleCompletor(fileCompletion));
         }
-
-        while(command.equals(""))
+        while(emptyCommand)
         {
             try
             {
                 command = reader.readLine(current+"> ");
+                emptyCommand = command.equals("");
             }
-            catch(IOException e)
+            catch(NullPointerException e)
             {
-                System.out.println("Error: "+e.getMessage());
-            }
+            	System.exit(1); //Quit properly when using ctrl-d
+            } catch (IOException e) {
+				System.out.println("Error" + e.getMessage());
+			}
         }
 
         return new Scanner(command);
@@ -565,7 +564,6 @@ public class cli
                 try
                 {
                     fileList = currentDir.listFiles(false, false); //for the download record
-
                     ArrayList<String> fileListUse = currentDir.listFiles(false, true); //for the usability
 
                     int i = 0;
@@ -576,9 +574,12 @@ public class cli
                 }
                 catch(Exception e)
                 {
-                    System.out.println("Error: "+e.getMessage());
+                    if (e.getMessage().equals("Connection timeout")) {
+                    	System.out.println("Connection timed out. Please try again later.");
+                    }
                 }
             }
         }
     }
 }
+
