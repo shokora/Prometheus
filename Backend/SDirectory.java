@@ -105,25 +105,25 @@ public class SDirectory
             {
                 files = dirs.get(a).listFiles();
             }
-            catch(Exception e)
+            catch(SmbException e)
             {
-                e.printStackTrace();
-            }
-
-                for(int i=0;i<files.length;i++)
-                {
-                    //if the file is a directory add it to the directory list so we can list it
-                    if(recursive &&  files[i].isDirectory()) dirs.add(files[i]);
-                    
-                    if(cut)
-                    {
-                        fileList.add(files[i].getName());
-                    }
-                    else
-                    {
-                        fileList.add(dirs.get(a)+files[i].getName());
-                    }
+                if (e.getMessage().equals("Connection timeout")) {
+                	throw e;
                 }
+            }
+            for(int i=0;i<files.length;i++)
+            {
+            	//if the file is a directory add it to the directory list so we can list it
+                if(recursive &&  files[i].isDirectory()) dirs.add(files[i]);
+                if(cut)
+                {
+                fileList.add(files[i].getName());
+                }
+                else
+                {
+                	fileList.add(dirs.get(a)+files[i].getName());
+                }
+             }
             a++;
         }
         return fileList;
