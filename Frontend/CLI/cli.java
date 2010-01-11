@@ -92,11 +92,10 @@ public class cli
         if(currentDir != null) current = currentDir.getCutPath();
         if(fileList != null)
         {
-           Iterator completors = reader.getCompletors().iterator();
-
-           while(completors.hasNext())
-           {
-               reader.removeCompletor((Completor) completors.next());
+           Collection<Completor> units = reader.getCompletors();
+           Object[] unitsarr = units.toArray();
+           for(int i=0; i < unitsarr.length; i++) {
+        	   reader.removeCompletor((Completor) unitsarr[i]);
            }
            String fileCompletion[] = new String[fileList.size()];
            fileList.toArray(fileCompletion);
