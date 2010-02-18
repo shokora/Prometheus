@@ -21,7 +21,6 @@ import java.sql.*;
 /**
  *
  * @author shokora
- * @author mrijke
  */
 public class databaseTest {
     

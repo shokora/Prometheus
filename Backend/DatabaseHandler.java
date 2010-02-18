@@ -22,7 +22,6 @@ import java.sql.*;
 /**
  * The database this project uses is SQLite because no server is needed.
  * @author shokora
- * @author mrijke
  */
 public class DatabaseHandler
 {

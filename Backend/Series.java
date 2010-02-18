@@ -22,7 +22,6 @@ import java.util.regex.*;
 /**
  *
  * @author shokora
- * @author mrijke
  */
 public class Series
 {

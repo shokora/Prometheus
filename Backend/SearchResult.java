@@ -21,7 +21,6 @@ package Backend;
 /**
  *
  * @author shokora
- * @author mrijke
 */
 public class SearchResult
 {

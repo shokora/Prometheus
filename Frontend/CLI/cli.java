@@ -359,12 +359,16 @@ public class cli
             {
                 if(downloadFile != null && downloadFile.isFile())
                 {
-
                    System.out.println("Getting file: "+downloadFile.getName());
                    SFile download = new SFile(downloadFile);
-                   download.get();
-                   System.out.println("Download is done, it's stored at "+download.getDownloadDir()+download.getSMBFile().getName());
-
+                   download.start();
+                   //boolean wordt te traag op true gezet, wait() / notify() implementeren
+                   while(download.getDownloading())
+                   {
+                        System.out.printf("%3.2f%%   %s Time left %s\r",download.getPercentage(),download.makeSpeedReadable(download.getSpeed()),download.makeTimeReadable(download.getTimeLeft()));
+                        System.out.flush();
+                   }
+                   System.out.println("\r\nDownload is done, it's stored at "+download.getDownloadDir()+download.getSMBFile().getName());
                 }
                 else if(downloadFile != null && downloadFile.isDirectory() && param.get("r").equals("true"))
                 {

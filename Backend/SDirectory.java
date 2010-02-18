@@ -24,13 +24,14 @@ import java.io.*;
 
 /**
  * @author shokora
- * @author mrijke
  */
 public class SDirectory
 {
-    String url;
-    SmbFile smbFile;
-    String downloadDir;
+    private String url;
+    private SmbFile smbFile;
+    private String downloadDir;
+    private boolean downloading = false;
+    private SFile currentFile;
     
     public SDirectory(String url) throws Exception
     {
